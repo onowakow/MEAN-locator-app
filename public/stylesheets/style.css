@@ -12,13 +12,12 @@ a {
 
 @import url("//fonts.googleapis.com/css?family=Shizuru:400,700");
 
-h1, h2, h3, h4, h5, h6, legend {
+h1 {
   font-family: 'Shizuru', sans-serif;
 }
 
-
 .navbar {
-  background-color: #655d8a;
+  background-color: #7897ab;
 }
 
 .navbar-brand {
@@ -27,17 +26,25 @@ h1, h2, h3, h4, h5, h6, legend {
   border-radius: 5px;
 }
 
-body {
-  font-family: "Cabin", Arial, sans-serif;
-  color: #fff;
-  background-color: #108a93;
-}
-
 .banner {
   margin-top: 4em !important;
-  border-bottom: 1px solid #469ea8;
+  border-bottom: 1px solid #655d8a;
   margin-bottom: 1.5em;
   padding-bottom: 0.5em;
+}
+
+.bigTitle {
+  font-size: 4em;
+}
+
+.bouquetImg {
+  max-width: 100%;
+  padding: 1px;
+  border: 3px solid #655d8a
+}
+
+.bouquet {
+  padding-right: 0
 }
 
 /*

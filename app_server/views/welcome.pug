@@ -3,11 +3,8 @@ extends layout
 block content
   .row.banner.justify-content-md-center
     .col-12
-      h1.bigTitle petals
+      h1.bigTitle= pageText.title
   .row
     .col-12
-      p Welcome to Petals: Laramie's online flower shop. Browse 
-        a(href='/shop') our selection
-        span &nbsp;to find the perfect flowers for any occasion. 
-
-      a(href='shop')
+      p= pageText.body
+      a(href= pageText.link.href)= pageText.link.text

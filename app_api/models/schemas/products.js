@@ -1,7 +1,10 @@
 const mongoose = require("mongoose");
 
 const reviewSchema = new mongoose.Schema({
-  author: String,
+  author: {
+    type: String,
+    required: true,
+  },
   email: String,
   rating: {
     type: Number,
@@ -17,13 +20,19 @@ const reviewSchema = new mongoose.Schema({
 });
 
 const productSchema = new mongoose.Schema({
-  name: String,
+  name: {
+    type: String,
+    required: true,
+  },
   href: String,
   price: {
     type: Number,
     min: 0,
   },
-  inStock: Boolean,
+  inStock: {
+    type: Boolean,
+    default: true,
+  },
   stars: {
     type: Number,
     default: 0,

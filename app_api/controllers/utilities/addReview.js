@@ -1,10 +1,6 @@
-const { updateAverageRating } = require("./updateAverageRating");
+const { updateAverageRating } = require('./updateAverageRating');
 
 const addReview = (req, res, product) => {
-  if (!product) {
-    return res.status(404).json({ message: "Product not found" });
-  }
-
   const review = {
     author: req.body.author,
     email: req.body.email,

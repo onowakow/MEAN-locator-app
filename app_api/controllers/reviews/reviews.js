@@ -1,36 +1,35 @@
 // See Getting MEAN 6.3.2
-const mongoose = require("mongoose");
-const productModel = mongoose.model("product");
+const { productModel } = require("../../models/schemas/products");
+const { getProductQuery } = require("../utilities/getProductQuery");
+const { updateAverageRating } = require("../utilities/updateAverageRating");
+const { addReview } = require("../utilities/addReview");
 
 const reviewsCreate = (req, res) => {
   const productId = req.params.productid;
-  if (productId) {
-    productModel
-      .findById(productId)
-      .select("reviews")
-      .exec((err, product) => {
-        if (err) return res.status(400).json(err);
-        doAddReview(req, res, product);
-      });
-  } else {
-    res.status(404).json({ message: "Product not found" });
-  }
+
+  if (!productId) return res.status(404).json({ message: "Product not found" });
+
+  getProductQuery(productId, ["reviews"]).exec((err, product) => {
+    if (err) return res.status(404).json(err);
+    addReview(req, res, product);
+  });
 };
 
+/*
 const doAddReview = (req, res, product) => {
   if (!product) {
     return res.status(404).json({ message: "Product not found" });
   }
 
-  const reviewArray = product.reviews;
   const review = {
     author: req.body.author,
     email: req.body.email,
     rating: req.body.rating,
-    reviewText: req.body.review,
+    reviewText: req.body.reviewText,
     createdOn: req.body.date,
   };
-  reviewArray.push(review);
+
+  product.reviews.push(review);
 
   product.save((err, product) => {
     if (err) {
@@ -42,35 +41,7 @@ const doAddReview = (req, res, product) => {
     res.status(201).json(thisReview);
   });
 };
-
-const doSetAverageRating = (product) => {
-  if (product.reviews && product.reviews.length > 0) {
-    const count = product.reviews.length;
-    const sumRating = reviewsArray.reduce((sum, review, index) => {
-      return (sum = sum + review.rating);
-    }, 0);
-    const average = sumRating / count;
-    product.stars = Math.round(average);
-    product.save((err) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(`Average rating updated to ${product.stars}`);
-      }
-    });
-  }
-};
-
-const updateAverageRating = (id) => {
-  productModel
-    .findById(id)
-    .select("reviews")
-    .exec((err, product) => {
-      if (!err) {
-        doSetAverageRating(product);
-      }
-    });
-};
+*/
 
 const reviewsReadOne = (req, res) => {
   productModel
@@ -113,4 +84,5 @@ module.exports = {
   reviewsReadOne,
   reviewsUpdateOne,
   reviewsDeleteOne,
+  productModel,
 };

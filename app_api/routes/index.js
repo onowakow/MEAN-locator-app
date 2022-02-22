@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const ctrlProducts = require("../controllers/products");
-const ctrlReviews = require("../controllers/reviews");
+const ctrlReviews = require("../controllers/reviews/reviews");
 
 // products
 router

@@ -12,7 +12,8 @@ router
   .route('/products/:productid')
   .get(ctrlProducts.productsReadOne)
   .put(ctrlProducts.productsUpdateOne)
-  .delete(ctrlProducts.productsDeleteOne);
+  .delete(ctrlProducts.productsDeleteOne)
+  .patch(ctrlProducts.productsPatchOne);
 
 // reviews
 router.route('/products/:productid/reviews').post(ctrlReviews.reviewsCreate);

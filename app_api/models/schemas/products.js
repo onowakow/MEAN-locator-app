@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema({
   author: {
@@ -24,8 +24,12 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  href: String,
+  href: {
+    type: String,
+    required: true,
+  },
   price: {
+    required: true,
     type: Number,
     min: 0,
   },
@@ -42,7 +46,7 @@ const productSchema = new mongoose.Schema({
   reviews: [reviewSchema],
 });
 
-mongoose.model("product", productSchema);
+mongoose.model('product', productSchema);
 
-const productModel = mongoose.model("product");
+const productModel = mongoose.model('product');
 module.exports = { productModel };

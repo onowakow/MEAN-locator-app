@@ -1,28 +1,12 @@
 const mongoose = require('mongoose');
 const productModel = mongoose.model('product');
 const { getProductQuery } = require('../utilities/getProductQuery');
-const { throwError } = require('../utilities/errors/throwError');
 const { sendObject } = require('../utilities/sendObject');
-
-const productNotFoundMessage = 'Product not found';
-const getQueryPromise = (query) => {
-  return query.exec();
-};
-const executePromiseWithCallbackOnSuccess = async (
-  res,
-  promise,
-  callback,
-  nullObjErr
-) => {
-  try {
-    const data = await promise;
-    data
-      ? callback(data) // Success
-      : throwError(res, 404, { message: nullObjErr });
-  } catch (err) {
-    throwError(res, 404, err);
-  }
-};
+const {
+  executePromiseWithCallbackOnSuccess,
+} = require('../utilities/executePromiseWithCallbackOnSuccess');
+const { getQueryPromise } = require('../utilities/getQueryPromise');
+const { productNotFoundMessage } = require('../utilities/errors/throwError');
 
 // API functions
 const productsList = (req, res) => {

@@ -1,20 +1,19 @@
 const { getProductQuery } = require('../utilities/getProductQuery');
 const { addReview } = require('../utilities/addReview');
-/*const {
-  getProductNotFoundError,
-} = require('../utilities/errors/getProductNotFoundError');
-*/
-const reviewsCreate = (req, res) => {
+const {
+  executePromiseWithCallbackOnSuccess,
+} = require('../utilities/executePromiseWithCallbackOnSuccess');
+const { getQueryPromise } = require('../utilities/getQueryPromise');
+const { productNotFoundMessage } = require('../utilities/errors/throwError');
+
+const reviewsCreate = async (req, res) => {
   const productId = req.params.productid;
+  const query = getProductQuery(productId, ['reviews']);
+  const promise = getQueryPromise(query);
+  const callback = (product) => addReview(req, res, product);
+  const nullObjErr = productNotFoundMessage;
 
-  if (!productId)
-    return res.status(404).json({ message: 'Must provide productId' });
-
-  getProductQuery(productId, ['reviews']).exec((err, product) => {
-    const productNotFoundError = getProductNotFoundError(err, product);
-    if (productNotFoundError) return res.status(404).json(productNotFoundError);
-    addReview(req, res, product);
-  });
+  executePromiseWithCallbackOnSuccess(res, promise, callback, nullObjErr);
 };
 
 const reviewsReadOne = (req, res) => {

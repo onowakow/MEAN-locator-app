@@ -18,7 +18,7 @@ const addReview = (req, res, product) => {
 
   const promise = product.save();
   const callback = (product) => {
-    updateAverageRating(product._id);
+    updateAverageRating(res, product._id);
     const thisReview = product.reviews.slice(-1).pop();
     sendObject(res, thisReview, 201);
   };

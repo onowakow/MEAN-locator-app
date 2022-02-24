@@ -1,13 +1,23 @@
-const { getProductQuery } = require("./getProductQuery");
+const { getProductQuery } = require('./getProductQuery');
+const {
+  executePromiseWithCallbackOnSuccess,
+} = require('./executePromiseWithCallbackOnSuccess');
+const { productNotFoundMessage } = require('./errors/throwError');
 
-const updateAverageRating = (id) => {
-  getProductQuery(id, ["reviews"]).exec((err, product) => {
-    if (!err) {
-      doSetAverageRating(product);
-    } else {
-      console.error("Error updating average rating:", err);
-    }
-  });
+const updateAverageRating = (res, id) => {
+  const promise = getProductQuery(id, ['reviews']);
+  const callback = doSetAverageRating(product);
+  const nullObjErr = productNotFoundMessage;
+  // Internal server error.
+  const mainErrCode = 500;
+
+  executePromiseWithCallbackOnSuccess(
+    res,
+    promise,
+    callback,
+    nullObjErr,
+    mainErrCode
+  );
 };
 
 const doSetAverageRating = (product) => {

@@ -9,6 +9,10 @@ const {
   throwError,
 } = require('../utilities/errors/throwError');
 const { sendObject } = require('../utilities/sendObject');
+const {
+  getReviewObjectFromProduct,
+} = require('../utilities/getReviewObjectFromProduct');
+const { getProductObject } = require('../utilities/getProductObject');
 
 const reviewsCreate = async (req, res) => {
   const productId = req.params.productid;
@@ -21,64 +25,39 @@ const reviewsCreate = async (req, res) => {
   executePromiseWithCallbackOnSuccess(res, promise, callback, nullObjErr);
 };
 
-const reviewsReadOne = (req, res) => {
+const reviewsReadOne = async (req, res) => {
   const productId = req.params.productid;
   const reviewId = req.params.reviewid;
-  if (!productId) return res.status(404).json({ message: 'Product not found' });
+  const { product, error } = await getProductObject(productId, [
+    'name reviews',
+  ]);
+  if (!product) return throwError(res, 404, productNotFoundMessage);
+  if (error) return throwError(res, 404, error);
 
-  const getReviewFromProduct = (product) => {
-    if (product.reviews && product.reviews.length > 0) {
-      const review = product.reviews.id(reviewId);
-      if (!review) return throwError(res, 404, 'Review not found');
-      const response = {
-        product: {
-          name: product.name,
-          _id: productId,
-        },
-        review,
-      };
-      return sendObject(res, response, 200);
-    } else {
-      return throwError(res, 404, 'No reviews found');
-    }
+  const review = getReviewObjectFromProduct(product, reviewId);
+  if (!review) return throwError(res, 404, 'Review not found');
+  const response = {
+    product: {
+      name: product.name,
+      _id: productId,
+    },
+    review,
   };
-
-  const query = getProductQuery(productId, ['name reviews']);
-  const promise = getQueryPromise(query);
-  const callback = getReviewFromProduct;
-  const nullObjErr = productNotFoundMessage;
-
-  executePromiseWithCallbackOnSuccess(res, promise, callback, nullObjErr);
-
-  /*
-  getProductQuery(productId, ['name reviews']).exec((err, product) => {
-    const productNotFoundError = getProductNotFoundError(err, product);
-    if (productNotFoundError) return res.status(404).json(productNotFoundError);
-
-    if (product.reviews && product.reviews.length > 0) {
-      const review = product.reviews.id(req.params.reviewid);
-
-      if (!review) {
-        return res.status(404).json({ message: 'Review not found' });
-      }
-
-      const response = {
-        product: {
-          name: product.name,
-          _id: req.params.productid,
-        },
-        review,
-      };
-
-      return res.status(200).json(response);
-    } else {
-      return res.status(404).json({ message: 'No reviews found' });
-    }
-  });
-  */
+  sendObject(res, response, 200);
 };
 
-const reviewsUpdateOne = (req, res) => {};
+const reviewsUpdateOne = async (req, res) => {
+  const productId = req.params.productid;
+  const reviewId = req.params.reviewid;
+
+  const { product, error } = await getProductObject(productId, [
+    'name, reviews',
+  ]);
+  // Get product
+  // Gather request data
+  // Modify product locally
+  // Save product and return modified.
+};
 const reviewsDeleteOne = (req, res) => {};
 
 module.exports = {

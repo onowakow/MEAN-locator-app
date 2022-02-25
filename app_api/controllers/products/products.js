@@ -6,7 +6,11 @@ const {
   executePromiseWithCallbackOnSuccess,
 } = require('../utilities/executePromiseWithCallbackOnSuccess');
 const { getQueryPromise } = require('../utilities/getQueryPromise');
-const { productNotFoundMessage } = require('../utilities/errors/throwError');
+const {
+  productNotFoundMessage,
+  throwError,
+} = require('../utilities/errors/throwError');
+const { getProductObject } = require('../utilities/getProductObject');
 
 // API functions
 const productsList = (req, res) => {
@@ -32,14 +36,13 @@ const productsCreate = (req, res) => {
   executePromiseWithCallbackOnSuccess(res, promise, callback, nullObjErr);
 };
 
-const productsReadOne = (req, res) => {
+const productsReadOne = async (req, res) => {
   const productId = req.params.productid;
-  const query = getProductQuery(productId);
-  const promise = getQueryPromise(query);
-  const nullObjErr = productNotFoundMessage;
-  const callback = (product) => sendObject(res, product);
+  const { product, error } = await getProductObject(productId);
 
-  executePromiseWithCallbackOnSuccess(res, promise, callback, nullObjErr);
+  if (product) return sendObject(res, product);
+  if (error) return throwError(res, 404, { message: error });
+  return throwError(res, 500, { message: 'Internal server error.' });
 };
 
 const productsUpdateOne = (req, res) => {

@@ -6,7 +6,7 @@ const { productNotFoundMessage } = require('./errors/throwError');
 
 const updateAverageRating = (res, id) => {
   const promise = getProductQuery(id, ['reviews']);
-  const callback = doSetAverageRating(product);
+  const callback = (product) => doSetAverageRating(product);
   const nullObjErr = productNotFoundMessage;
   // Internal server error.
   const mainErrCode = 500;

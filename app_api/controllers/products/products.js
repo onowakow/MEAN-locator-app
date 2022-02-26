@@ -45,26 +45,26 @@ const productsReadOne = async (req, res) => {
   return throwError(res, 500, { message: 'Internal server error.' });
 };
 
-const productsUpdateOne = (req, res) => {
-  const editProduct = async (req, res, product) => {
-    product.name = req.body.name;
-    product.href = req.body.href;
-    product.price = req.body.price;
-
-    const promise = product.save();
-    const callback = (product) => sendObject(res, product);
-    const nullObjErr = 'Unable to create product';
-
-    executePromiseWithCallbackOnSuccess(res, promise, callback, nullObjErr);
-  };
-
+const productsUpdateOne = async (req, res) => {
   const productId = req.params.productid;
-  const query = getProductQuery(productId, ['-reviews', '-ratings']);
-  const promise = getQueryPromise(query);
-  const nullObjErr = productNotFoundMessage;
-  const callback = (product) => {
-    editProduct(req, res, product);
-  };
+  const { product, error } = await getProductObject(productId);
+
+  if (!product && !error)
+    throwError(res, 500, {
+      message: 'Server failed to get object and throw error',
+    });
+  if (!product)
+    return throwError(res, 404, { message: productNotFoundMessage });
+  if (error) return throwError(res, 404, { message: error });
+
+  // Edit product
+  product.name = req.body.name;
+  product.href = req.body.href;
+  product.price = req.body.price;
+
+  const promise = product.save();
+  const callback = (product) => sendObject(res, product);
+  const nullObjErr = 'Unable to create product';
 
   executePromiseWithCallbackOnSuccess(res, promise, callback, nullObjErr);
 };
@@ -79,6 +79,9 @@ const productsDeleteOne = (req, res) => {
   executePromiseWithCallbackOnSuccess(res, promise, callback, nullObjErr);
 };
 
+/* Patch not very RESTful. User can patch non-existent fields, like 'nam' 
+  instead of 'name.' This results in no modification but a success
+  code */
 const productsPatchOne = (req, res) => {
   const patches = JSON.parse(JSON.stringify(req.body));
   const productId = req.params.productid;

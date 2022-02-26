@@ -1,5 +1,3 @@
-const mongoose = require('mongoose');
-
 /* This function generalizes the promise execution and handling
   by executing a promise, handling errors, and calling a custom
   callback on success. */
@@ -54,7 +52,7 @@ const reviewsCreate = async (req, res) => {
         name: product.name,
         _id: product._id,
       },
-      review: product.reviews.id(reviewId),
+      review: product.reviews.pop(),
     };
     return sendObject(res, response, 201);
   };

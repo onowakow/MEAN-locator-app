@@ -14,7 +14,6 @@ router
   .put(ctrlProducts.productsUpdateOne)
   .delete(ctrlProducts.productsDeleteOne)
   .patch(ctrlProducts.productsPatchOne);
-
 // reviews
 router.route('/products/:productid/reviews').post(ctrlReviews.reviewsCreate);
 router

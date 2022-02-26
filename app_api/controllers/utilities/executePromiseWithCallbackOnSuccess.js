@@ -15,6 +15,7 @@ const executePromiseWithCallbackOnSuccess = async (
       ? callback(data) // Success
       : throwError(res, 404, { message: nullObjErr });
   } catch (err) {
+    console.log(err);
     throwError(res, errCode, err);
   }
 };

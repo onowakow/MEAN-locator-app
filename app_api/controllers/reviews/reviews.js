@@ -1,19 +1,29 @@
 const mongoose = require('mongoose');
-const { getProductQuery } = require('../utilities/getProductQuery');
-const { addReview } = require('../utilities/addReview');
+
+/* This function generalizes the promise execution and handling
+  by executing a promise, handling errors, and calling a custom
+  callback on success. */
 const {
   executePromiseWithCallbackOnSuccess,
 } = require('../utilities/executePromiseWithCallbackOnSuccess');
-const { getQueryPromise } = require('../utilities/getQueryPromise');
+
+/* throwError and sendObject generalize res.status().json() */
 const {
   productNotFoundMessage,
   throwError,
 } = require('../utilities/errors/throwError');
 const { sendObject } = require('../utilities/sendObject');
+
 const {
   getReviewObjectFromProduct,
 } = require('../utilities/getReviewObjectFromProduct');
+
+/* getProductObject(productId, fieldSelect) returns an object 
+  { product, error } Several functions in this API require getting 
+  a product and making modifications to it. */
 const { getProductObject } = require('../utilities/getProductObject');
+
+/* Takes an array of values and returns the average */
 const {
   calculateAverageRating,
 } = require('../utilities/calculateAverageRating');
@@ -58,17 +68,6 @@ const reviewsCreate = async (req, res) => {
     nullObjErr,
     mainErr
   );
-
-  /*
-  const productId = req.params.productid;
-  if (!productId) return res.status(404).json({ message: 'Product not found' });
-  const query = getProductQuery(productId, ['reviews']);
-  const promise = getQueryPromise(query);
-  const callback = (product) => addReview(req, res, product);
-  const nullObjErr = productNotFoundMessage;
-
-  executePromiseWithCallbackOnSuccess(res, promise, callback, nullObjErr);
-  */
 };
 
 const reviewsReadOne = async (req, res) => {
